@@ -5,6 +5,8 @@ import RegisterPage from './pages/RegisterPage';
 import AgencyDashboard from './pages/AgencyDashboard';
 import TripDetails from './pages/TripDetails';
 import TripBooking from './pages/TripBooking';
+import HomePage from './pages/HomePage';
+
 
 
 
@@ -12,11 +14,14 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LoginPage />} />
+        <Route path="/" element={<HomePage />} />
+         <Route path="/login" element={<LoginPage />} />
          <Route path="/register" element={<RegisterPage />} />
          <Route path="/dashboard" element={<AgencyDashboard />} />
          <Route path="/trips/:id" element={<TripDetails />} />
          <Route path="/book/:id" element={<TripBooking />} />
+       
+
 
       </Routes>
     </Router>
