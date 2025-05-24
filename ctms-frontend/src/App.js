@@ -6,6 +6,8 @@ import AgencyDashboard from './pages/AgencyDashboard';
 import TripDetails from './pages/TripDetails';
 import TripBooking from './pages/TripBooking';
 import HomePage from './pages/HomePage';
+import RegisterAgency from './pages/RegisterAgency';
+import AgencyLogin from './pages/AgencyLogin';
 
 
 
@@ -21,6 +23,9 @@ function App() {
          <Route path="/dashboard" element={<AgencyDashboard />} />
          <Route path="/trips/:id" element={<TripDetails />} />
          <Route path="/book/:id" element={<TripBooking />} />
+         <Route path="/register-agency" element={<RegisterAgency />} />
+         <Route path="/agency-login" element={<AgencyLogin />} />
+
        
 
 

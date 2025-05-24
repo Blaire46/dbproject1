@@ -38,8 +38,11 @@ const AgencyDashboard = () => {
   const navigate = useNavigate();
   const { agencyId } = useParams();
 
+  const userRole = localStorage.getItem('userRole'); // 'agency' or 'client'
+  const loggedAgencyId = Number(localStorage.getItem('loggedAgencyId')) || Number(agencyId);
+
   const [tab, setTab] = useState(0);
-  const [trips, setTrips] = useState(getTripsForAgency(agencyId));
+  const [trips, setTrips] = useState(getTripsForAgency(loggedAgencyId));
   const [bookings, setBookings] = useState(getStoredBookings());
   const [open, setOpen] = useState(false);
   const [newTrip, setNewTrip] = useState({
@@ -49,7 +52,6 @@ const AgencyDashboard = () => {
   });
 
   const handleAddTrip = () => {
-    const loggedAgencyId = Number(localStorage.getItem('loggedAgencyId'));
     const tripToAdd = {
       id: Date.now(),
       title: newTrip.title,
@@ -69,24 +71,29 @@ const AgencyDashboard = () => {
 
   return (
     <Container sx={{ mt: 5 }}>
-      <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', textAlign: 'center' }}>
+      <Typography variant="h4" gutterBottom align="center" sx={{ fontWeight: 'bold' }}>
         🌍 Agency Dashboard
       </Typography>
 
-      {/* Navigation Tabs */}
-      <Tabs value={tab} onChange={(e, newValue) => setTab(newValue)} centered>
-        <Tab label="Trips" />
-        <Tab label="Bookings" />
-      </Tabs>
+      {/* Tabs only for agencies */}
+      {userRole === 'agency' && (
+        <Tabs value={tab} onChange={(e, newValue) => setTab(newValue)} centered>
+          <Tab label="Trips" />
+          <Tab label="Bookings" />
+        </Tabs>
+      )}
 
       <Box sx={{ mt: 4 }}>
-        {tab === 0 && (
+        {(userRole !== 'agency' || tab === 0) && (
           <>
-            <Grid container justifyContent="center" sx={{ mb: 4 }}>
-              <Button variant="contained" onClick={() => setOpen(true)}>
-                ➕ Add Trip
-              </Button>
-            </Grid>
+            {/* Add Trip Button for agencies */}
+            {userRole === 'agency' && (
+              <Grid container justifyContent="center" sx={{ mb: 4 }}>
+                <Button variant="contained" onClick={() => setOpen(true)}>
+                  ➕ Add Trip
+                </Button>
+              </Grid>
+            )}
 
             <Grid container spacing={4}>
               {trips.map((trip) => (
@@ -99,24 +106,34 @@ const AgencyDashboard = () => {
                       alt={trip.title}
                     />
                     <CardContent>
-                      <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+                      <Typography variant="h6" gutterBottom>
                         {trip.title}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
                         {trip.description}
                       </Typography>
                     </CardContent>
-                    <CardActions sx={{ justifyContent: 'space-between', px: 2, pb: 2 }}>
-                      <Button size="small" onClick={() => navigate(`/trips/${trip.id}`)}>Details</Button>
-                      <Button size="small" color="error">Delete</Button>
+                    <CardActions sx={{ justifyContent: 'space-between', px: 2 }}>
+                      {userRole === 'agency' && (
+                        <>
+                          <Button size="small" onClick={() => navigate(`/trips/${trip.id}`)}>
+                            Details
+                          </Button>
+                          <Button size="small" color="error">
+                            Delete
+                          </Button>
+                        </>
+                      )}
+                      <Button size="small" onClick={() => navigate(`/book/${trip.id}`)}>
+                        Book Now
+                      </Button>
                     </CardActions>
-                    <Button onClick={() => navigate(`/book/${trip.id}`)}>Book Now</Button>
                   </Card>
                 </Grid>
               ))}
             </Grid>
 
-            {/* Dialog for Add Trip */}
+            {/* Add Trip Dialog */}
             <Dialog open={open} onClose={() => setOpen(false)}>
               <DialogTitle>Add New Trip</DialogTitle>
               <DialogContent>
@@ -146,15 +163,14 @@ const AgencyDashboard = () => {
               </DialogContent>
               <DialogActions>
                 <Button onClick={() => setOpen(false)}>Cancel</Button>
-                <Button onClick={handleAddTrip} variant="contained">
-                  Add
-                </Button>
+                <Button onClick={handleAddTrip} variant="contained">Add</Button>
               </DialogActions>
             </Dialog>
           </>
         )}
 
-        {tab === 1 && (
+        {/* Bookings tab for agency */}
+        {userRole === 'agency' && tab === 1 && (
           <Paper sx={{ overflowX: 'auto' }}>
             <Table>
               <TableHead>

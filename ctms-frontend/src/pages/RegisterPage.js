@@ -122,18 +122,7 @@ const RegisterPage = () => {
             helperText={errors.password}
           />
 
-          <TextField
-            label="Role"
-            name="role"
-            select
-            fullWidth
-            margin="normal"
-            value={formData.role}
-            onChange={handleChange}
-          >
-            <MenuItem value="client">Client</MenuItem>
-            <MenuItem value="agency">Agency</MenuItem>
-          </TextField>
+         
 
           <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}   onClick={() => {
     // تحقق من صحة الحقول

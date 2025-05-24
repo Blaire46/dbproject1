@@ -36,6 +36,12 @@ const HomePage = () => {
               Get Started
             </Button>
           </Box>
+        
+          <Button variant="contained" color="inherit" sx={{ backgroundColor: '#A1887F' }} onClick={() => navigate('/agency-login')}>
+  Agency Login
+</Button>
+
+
         </Container>
       </Box>
 

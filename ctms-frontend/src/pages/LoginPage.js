@@ -9,7 +9,7 @@ const LoginPage = () => {
   const handleLogin = (e) => {
     e.preventDefault();
     // Login logic will go here
-    alert('Login submitted');
+    
   };
 
   return (
