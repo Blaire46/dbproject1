@@ -1,8 +1,11 @@
 import React from 'react';
 import { Container, TextField, Button, Typography, Box, Link } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+
   const handleLogin = (e) => {
     e.preventDefault();
     // Login logic will go here
@@ -44,6 +47,10 @@ const LoginPage = () => {
           <Button
             type="submit"
             variant="contained"
+             onClick={() => {
+    // تحقق من صحة البيانات (أو أي منطق)
+    navigate('/'); // توجّه إلى الصفحة الرئيسية
+  }}
             color="primary"
             fullWidth
             sx={{ mt: 2 }}

@@ -7,31 +7,55 @@ import {
   Box,
   Alert
 } from '@mui/material';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 const TripBooking = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
 
   const [form, setForm] = useState({
-    name: '',
-    date: ''
+    fullName: '',
+    email: '',
+    phone: '',
+    people: 1,
+    date: '',
+    message: ''
   });
+
   const [submitted, setSubmitted] = useState(false);
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    setSubmitted(true);
-    // يمكنك حفظ الحجز في قاعدة بيانات أو إرسال API هنا
-    console.log('Booking submitted:', { tripId: id, ...form });
+  e.preventDefault();
+  setSubmitted(true);
 
-    // إعادة توجيه بعد التأكيد (اختياري)
-    // navigate('/dashboard');
+  const newBooking = {
+    id: Date.now(),
+    tripId: id,
+    ...form,
+    status: 'Pending'
   };
+
+  // ⬇️ حفظ في localStorage
+  const existing = JSON.parse(localStorage.getItem('bookings')) || [];
+  localStorage.setItem('bookings', JSON.stringify([...existing, newBooking]));
+
+  console.log('📦 Booking saved:', newBooking);
+
+  // رسالة شكر
+  setForm({
+    fullName: '',
+    email: '',
+    phone: '',
+    people: 1,
+    date: '',
+    message: ''
+  });
+};
+
 
   return (
     <Container maxWidth="sm">
@@ -42,33 +66,72 @@ const TripBooking = () => {
 
         {submitted && (
           <Alert severity="success" sx={{ mb: 2 }}>
-            ✅ Booking submitted successfully!
+            🎉 Booking submitted successfully!
           </Alert>
         )}
 
         <form onSubmit={handleSubmit}>
           <TextField
             label="Full Name"
-            name="name"
+            name="fullName"
             fullWidth
             margin="normal"
             required
-            value={form.name}
+            value={form.fullName}
             onChange={handleChange}
           />
           <TextField
-            label="Date of Trip"
+            label="Email"
+            name="email"
+            type="email"
+            fullWidth
+            margin="normal"
+            required
+            value={form.email}
+            onChange={handleChange}
+          />
+          <TextField
+            label="Phone Number"
+            name="phone"
+            fullWidth
+            margin="normal"
+            required
+            value={form.phone}
+            onChange={handleChange}
+          />
+          <TextField
+            label="Number of People"
+            name="people"
+            type="number"
+            fullWidth
+            margin="normal"
+            required
+            value={form.people}
+            onChange={handleChange}
+            inputProps={{ min: 1 }}
+          />
+          <TextField
+            label="Trip Date"
             name="date"
             type="date"
             fullWidth
             margin="normal"
             required
-            InputLabelProps={{
-              shrink: true
-            }}
+            InputLabelProps={{ shrink: true }}
             value={form.date}
             onChange={handleChange}
           />
+          <TextField
+            label="Additional Notes"
+            name="message"
+            multiline
+            rows={3}
+            fullWidth
+            margin="normal"
+            value={form.message}
+            onChange={handleChange}
+          />
+
           <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
             Confirm Booking
           </Button>

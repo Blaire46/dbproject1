@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import {
   Container,
   TextField,
@@ -10,6 +12,8 @@ import {
 } from '@mui/material';
 
 const RegisterPage = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -131,7 +135,10 @@ const RegisterPage = () => {
             <MenuItem value="agency">Agency</MenuItem>
           </TextField>
 
-          <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+          <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}   onClick={() => {
+    // تحقق من صحة الحقول
+    navigate('/');
+  }}>
             Register
           </Button>
         </form>
