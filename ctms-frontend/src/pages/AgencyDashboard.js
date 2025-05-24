@@ -52,29 +52,12 @@ const initialTrips = [
 ];
 
 // Mock Bookings
-const mockBookings = [
-  {
-    id: 101,
-    client: 'Amina Ali',
-    tripTitle: 'Cultural Tour of Marrakech',
-    date: '2025-06-10',
-    status: 'Confirmed'
-  },
-  {
-    id: 102,
-    client: 'Omar Youssef',
-    tripTitle: 'Ancient Rome Experience',
-    date: '2025-07-04',
-    status: 'Pending'
-  },
-  {
-    id: 103,
-    client: 'Leila Karim',
-    tripTitle: 'Egyptian Pyramids Adventure',
-    date: '2025-08-15',
-    status: 'Cancelled'
-  }
-];
+const getStoredBookings = () => {
+  return JSON.parse(localStorage.getItem('bookings')) || [];
+};
+
+
+
 
 const AgencyDashboard = () => {
   const [tab, setTab] = useState(0);
@@ -85,7 +68,7 @@ const AgencyDashboard = () => {
     description: '',
     image: ''
   });
-
+const [bookings, setBookings] = useState(getStoredBookings());
   const navigate = useNavigate();
 
   const handleAddTrip = () => {
@@ -209,14 +192,15 @@ const AgencyDashboard = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {mockBookings.map((booking) => (
-                  <TableRow key={booking.id}>
-                    <TableCell>{booking.id}</TableCell>
-                    <TableCell>{booking.client}</TableCell>
-                    <TableCell>{booking.tripTitle}</TableCell>
-                    <TableCell>{booking.date}</TableCell>
-                    <TableCell>{booking.status}</TableCell>
-                  </TableRow>
+                {bookings.map((booking) => (
+                 <TableRow key={booking.id}>
+  <TableCell>{booking.id}</TableCell>
+  <TableCell>{booking.fullName}</TableCell>
+  <TableCell>Trip #{booking.tripId}</TableCell>
+  <TableCell>{booking.date}</TableCell>
+  <TableCell>{booking.status}</TableCell>
+</TableRow>
+
                 ))}
               </TableBody>
             </Table>
