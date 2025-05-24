@@ -64,3 +64,5 @@ CREATE TABLE Reviews (
     FOREIGN KEY (customer_id) REFERENCES Customers(customer_id) ON DELETE CASCADE
 );
 DROP  TABLE Agency1;
+INSERT INTO Agency (agency_id, agency_name, agency_profile)
+VALUES (1, 'Travel Agency A', 'We specialize in adventure trips.');
