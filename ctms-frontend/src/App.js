@@ -15,6 +15,7 @@ function App() {
         <Route path="/" element={<LoginPage />} />
          <Route path="/register" element={<RegisterPage />} />
          <Route path="/dashboard" element={<AgencyDashboard />} />
+         <Route path="/dashboard" element={<AgencyDashboard />} />
          <Route path="/trips/:id" element={<TripDetails />} />
          <Route path="/book/:id" element={<TripBooking />} />
 
