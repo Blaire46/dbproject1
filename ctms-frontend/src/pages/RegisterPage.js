@@ -18,11 +18,13 @@ const RegisterPage = () => {
     name: '',
     email: '',
     password: '',
+    phone: '',
     role: 'client',
   });
 
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
+  const [serverError, setServerError] = useState('');
 
   const validate = () => {
     const newErrors = {};
@@ -43,19 +45,49 @@ const RegisterPage = () => {
       newErrors.password = 'Password must be at least 6 characters';
     }
 
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'Phone number is required';
+    }
+
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitted(false);
+    setServerError('');
+
     const validationErrors = validate();
     setErrors(validationErrors);
-    setSubmitted(false);
 
     if (Object.keys(validationErrors).length === 0) {
-      setSubmitted(true);
-      console.log('Submitted successfully:', formData);
-      // You can send the data to backend here
+      try {
+        const response = await fetch('http://localhost:4000/api/customers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: formData.name,
+            email: formData.email,
+            password: formData.password,
+            phone: formData.phone,
+          }),
+        });
+
+        if (!response.ok) {
+          const text = await response.text();
+          throw new Error('Server error: ' + text);
+        }
+
+        const data = await response.json();
+        console.log('✅ Registered:', data);
+        setSubmitted(true);
+
+        // Redirect to login or home page
+        navigate('/');
+      } catch (error) {
+        console.error('❌ Registration error:', error.message);
+        setServerError(error.message);
+      }
     }
   };
 
@@ -83,6 +115,12 @@ const RegisterPage = () => {
         {submitted && (
           <Alert severity="success" sx={{ width: '100%', mb: 2 }}>
             ✅ Registered successfully!
+          </Alert>
+        )}
+
+        {serverError && (
+          <Alert severity="error" sx={{ width: '100%', mb: 2 }}>
+            ❌ {serverError}
           </Alert>
         )}
 
@@ -122,12 +160,24 @@ const RegisterPage = () => {
             helperText={errors.password}
           />
 
-         
+          <TextField
+            label="Phone Number"
+            name="phone"
+            fullWidth
+            margin="normal"
+            value={formData.phone}
+            onChange={handleChange}
+            error={Boolean(errors.phone)}
+            helperText={errors.phone}
+          />
 
-          <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}   onClick={() => {
-    // تحقق من صحة الحقول
-    navigate('/');
-  }}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{ mt: 2 }}
+          >
             Register
           </Button>
         </form>

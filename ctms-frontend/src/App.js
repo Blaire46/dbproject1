@@ -8,6 +8,7 @@ import TripBooking from './pages/TripBooking';
 import HomePage from './pages/HomePage';
 import RegisterAgency from './pages/RegisterAgency';
 import AgencyLogin from './pages/AgencyLogin';
+import AllTrips from './pages/AllTrips';
 
 
 
@@ -25,6 +26,7 @@ function App() {
          <Route path="/book/:id" element={<TripBooking />} />
          <Route path="/register-agency" element={<RegisterAgency />} />
          <Route path="/agency-login" element={<AgencyLogin />} />
+         <Route path="/all-trips" element={<AllTrips />} />
 
        
 

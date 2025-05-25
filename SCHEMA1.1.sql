@@ -6,6 +6,8 @@ CREATE TABLE Agency (
     agency_profile CLOB,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+ALTER TABLE Customers ADD password VARCHAR(255) NOT NULL;
+ALTER TABLE Agency ADD password VARCHAR(255) NOT NULL;
 
 -- Trips Table
 CREATE TABLE Trips (
