@@ -14,9 +14,15 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
+// Full list of 58 wilayas in Algeria
 const wilayas = [
-  'Algiers', 'Oran', 'Constantine', 'Tizi Ouzou', 'Blida',
-  'Setif', 'Bejaia', 'Annaba', 'Tlemcen', 'Batna'
+  'Adrar', 'Chlef', 'Laghouat', 'Oum El Bouaghi', 'Batna', 'Béjaïa', 'Biskra', 'Béchar', 'Blida', 'Bouira',
+  'Tamanrasset', 'Tébessa', 'Tlemcen', 'Tiaret', 'Tizi Ouzou', 'Algiers', 'Djelfa', 'Jijel', 'Sétif', 'Saïda',
+  'Skikda', 'Sidi Bel Abbès', 'Annaba', 'Guelma', 'Constantine', 'Médéa', 'Mostaganem', 'M’Sila', 'Mascara',
+  'Ouargla', 'Oran', 'El Bayadh', 'Illizi', 'Bordj Bou Arréridj', 'Boumerdès', 'El Tarf', 'Tindouf', 'Tissemsilt',
+  'El Oued', 'Khenchela', 'Souk Ahras', 'Tipaza', 'Mila', 'Aïn Defla', 'Naâma', 'Aïn Témouchent', 'Ghardaïa',
+  'Relizane', 'Timimoun', 'Bordj Badji Mokhtar', 'Ouled Djellal', 'Beni Abbès', 'In Salah', 'In Guezzam',
+  'Touggourt', 'Djanet', 'El M’Ghair', 'El Meniaa'
 ];
 
 const RegisterAgency = () => {
@@ -28,6 +34,7 @@ const RegisterAgency = () => {
     phone: '',
     address: ''
   });
+
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
 
@@ -36,37 +43,42 @@ const RegisterAgency = () => {
     setError('');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const allAgencies = JSON.parse(localStorage.getItem('agencies')) || [];
-
-    // تحقق من تكرار الإيميل
-    const emailExists = allAgencies.some((a) => a.email === agency.email);
-    if (emailExists) {
-      setError('❌ This email is already registered. Please use another one.');
-      return;
-    }
-
-    // تحقق من رقم الهاتف
+    // Validate phone
     const phoneValid = /^(05|06|07)[0-9]{8}$/.test(agency.phone);
     if (!phoneValid) {
       setError('❌ Invalid phone number. Must be 10 digits and start with 05, 06, or 07.');
       return;
     }
 
-    const newAgency = {
-      ...agency,
-      id: Date.now()
-    };
+    try {
+      const response = await fetch('http://localhost:4000/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(agency)
+      });
 
-    localStorage.setItem('agencies', JSON.stringify([...allAgencies, newAgency]));
-    localStorage.setItem('loggedAgencyId', newAgency.id);
-    setSuccess(true);
+      const data = await response.json();
 
-    setTimeout(() => {
-      navigate(`/dashboard/${newAgency.id}`);
-    }, 1500);
+      if (!response.ok) {
+        throw new Error(data.message || 'Registration failed');
+      }
+
+      if (data.success && data.agencyId) {
+        localStorage.setItem('loggedAgencyId', data.agencyId);
+        setSuccess(true);
+
+        setTimeout(() => {
+          navigate(`/dashboard/${data.agencyId}`);
+        }, 1500);
+      } else {
+        throw new Error('Unexpected response from server.');
+      }
+    } catch (err) {
+      setError(err.message || 'Failed to register agency.');
+    }
   };
 
   return (

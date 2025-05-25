@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import axios from 'axios'; // Import Axios
 import {
   Container,
   TextField,
   Button,
   Typography,
   Box,
-  MenuItem,
   Alert,
+  MenuItem, // Ensure you import MenuItem if you plan to use it
 } from '@mui/material';
 
 const RegisterPage = () => {
@@ -19,7 +19,7 @@ const RegisterPage = () => {
     email: '',
     password: '',
     phone: '',
-    role: 'client',
+    // option: '', // Uncomment if you add a dropdown
   });
 
   const [errors, setErrors] = useState({});
@@ -28,27 +28,12 @@ const RegisterPage = () => {
 
   const validate = () => {
     const newErrors = {};
-
-    if (!formData.name.trim()) {
-      newErrors.name = 'Full name is required';
-    }
-
-    if (!formData.email) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Invalid email format';
-    }
-
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
-    }
-
-    if (!formData.phone.trim()) {
-      newErrors.phone = 'Phone number is required';
-    }
-
+    if (!formData.name.trim()) newErrors.name = 'Full name is required';
+    if (!formData.email) newErrors.email = 'Email is required';
+    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Invalid email format';
+    if (!formData.password) newErrors.password = 'Password is required';
+    else if (formData.password.length < 6) newErrors.password = 'Password must be at least 6 characters';
+    if (!formData.phone.trim()) newErrors.phone = 'Phone number is required';
     return newErrors;
   };
 
@@ -62,31 +47,19 @@ const RegisterPage = () => {
 
     if (Object.keys(validationErrors).length === 0) {
       try {
-        const response = await fetch('http://localhost:4000/api/customers', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name: formData.name,
-            email: formData.email,
-            password: formData.password,
-            phone: formData.phone,
-          }),
+        const response = await axios.post('http://localhost:4000/api/customers', { // Updated endpoint
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          phone: formData.phone,
         });
 
-        if (!response.ok) {
-          const text = await response.text();
-          throw new Error('Server error: ' + text);
-        }
-
-        const data = await response.json();
-        console.log('✅ Registered:', data);
+        console.log('✅ Registered:', response.data);
         setSubmitted(true);
-
-        // Redirect to login or home page
-        navigate('/');
+        navigate('/'); // Redirect on success
       } catch (error) {
-        console.error('❌ Registration error:', error.message);
-        setServerError(error.message);
+        console.error('❌ Registration error:', error.response?.data || error.message);
+        setServerError(error.response?.data?.error || 'An error occurred during registration.');
       }
     }
   };
@@ -170,6 +143,23 @@ const RegisterPage = () => {
             error={Boolean(errors.phone)}
             helperText={errors.phone}
           />
+
+          {/* Optional Dropdown Example */}
+          {/* Uncomment if you want to add a dropdown */}
+          {/* <TextField
+            select
+            label="Select Option"
+            name="option"
+            fullWidth
+            margin="normal"
+            value={formData.option}
+            onChange={handleChange}
+            error={Boolean(errors.option)}
+            helperText={errors.option}
+          >
+            <MenuItem value="option1">Option 1</MenuItem>
+            <MenuItem value="option2">Option 2</MenuItem>
+          </TextField> */}
 
           <Button
             type="submit"
