@@ -26,18 +26,18 @@ const HomePage = () => {
             CTMS Agency
           </Typography>
 
-          <Button color="inherit" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}  sx={{ mt: 4, color: '#fff',fontWeight: 'bold', borderColor: '#fff' }}>Home</Button>
+          <Button color="inherit" onClick={() => document.getElementById('hero').scrollIntoView({ behavior: 'smooth' })} sx={{ mt: 4, color: '#fff',fontWeight: 'bold', borderColor: '#fff' }}>Home</Button>
           <Button color="inherit" onClick={() => document.getElementById('about').scrollIntoView({ behavior: 'smooth' })} sx={{ mt: 4, color: '#fff', fontWeight: 'bold', borderColor: '#fff' }}>About</Button>
           <Button color="inherit" onClick={() => document.getElementById('gallery').scrollIntoView({ behavior: 'smooth' })} sx={{ mt: 4, color: '#fff', fontWeight: 'bold', borderColor: '#fff' }}>Gallery</Button>
-          <Button color="inherit" onClick={() => document.getElementById('reviews').scrollIntoView({ behavior: 'smooth' })} sx={{ mt: 4, color: '#fff',fontWeight: 'bold', borderColor: '#fff' }}>Reviews</Button>
-          <Button color="inherit" onClick={() => document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })} sx={{ mt: 4, color: '#fff', fontWeight: 'bold',borderColor: '#fff' }}>Contact</Button>
+          <Button color="inherit" onClick={() => document.getElementById('reviews').scrollIntoView({ behavior: 'smooth' })} sx={{ mt: 4, color: '#fff',fontWeight: 'bold', borderColor: '#fff' }}>Feedback</Button>
+          <Button color="inherit" onClick={() => document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })} sx={{ mt: 4, color: '#fff', fontWeight: 'bold',borderColor: '#fff' }}>Contact Us</Button>
 
           <Button
             color="inherit"
             onClick={(e) => setLoginAnchorEl(e.currentTarget)}
             sx={{ mt: 4, color: '#fff', borderColor: '#fff' }}
           >
-            Login <ArrowDropDownIcon />
+            Log in <ArrowDropDownIcon />
           </Button>
           <Menu
             anchorEl={loginAnchorEl}
@@ -51,7 +51,7 @@ const HomePage = () => {
       </AppBar>
 
       {/* Hero Section */}
-      <Box
+      <Box id="hero"
         sx={{
           position: 'relative',
           height: '100vh',
@@ -82,7 +82,7 @@ const HomePage = () => {
 
 
       {/* Featured Trips Section */}
-      <Container sx={{ mt: 8 }}>
+      <Container  sx={{ mt: 8 }}>
         <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', textAlign: 'center' }}>Featured Trips</Typography>
         <Grid container spacing={4} sx={{ mt: 2 }}>
           {sampleTrips.map((trip) => (
@@ -103,9 +103,47 @@ const HomePage = () => {
           </Button>
         </Grid>
       </Container>
+{/* Gallery Section */}
+<Box id="gallery" sx={{ backgroundColor: '#F5F5DC', py: 6 }}>
+  <Container>
+    <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', color: '#6D4C41' }}>
+      Trip Gallery
+    </Typography>
+    <Grid container spacing={3}>
+      {[
+        'https://media.product.which.co.uk/prod/images/original/ab6f7a93264d-cultural-tour-providers.jpg',
+        'https://www.responsiblevacation.com/imagesClient/2153_1644.jpg',
+        'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2b/a8/7c/13/caption.jpg?w=500&h=400&s=1'
+      ].map((url, index) => (
+        <Grid item xs={12} sm={4} key={index}>
+          <Card
+            sx={{
+              height: 220,
+              width: '100%',
+              overflow: 'hidden',
+              borderRadius: 3,
+              boxShadow: 3
+            }}
+          >
+            <Box
+              component="img"
+              src={url}
+              alt={`Trip ${index + 1}`}
+              sx={{
+                height: '100%',
+                width: '100%',
+                objectFit: 'cover'
+              }}
+            />
+          </Card>
+        </Grid>
+      ))}
+    </Grid>
+  </Container>
+</Box>
 
       {/* About Section */}
-      <Container sx={{ py: 6 }}>
+      <Container id='about' sx={{ py: 6 }}>
         <Typography variant="h4" gutterBottom sx={{ color: '#4E342E', fontWeight: 'bold' }}>About Our Agency</Typography>
         <Typography color="text.secondary" paragraph>
           CTMS helps agencies organize, publish, and manage cultural and historical trips. Whether you're an agency or traveler, CTMS simplifies your travel experience.
@@ -113,7 +151,7 @@ const HomePage = () => {
       </Container>
 
       {/* Testimonials */}
-      <Container sx={{ py: 6 }}>
+      <Container id='reviews' sx={{ py: 6 }}>
         <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', color: '#4E342E' }}>What Our Travelers Say</Typography>
         <Grid container spacing={4}>
           {[{ name: 'Amina B.', initial: 'A', msg: 'A wonderful experience in Marrakech. Everything was well-organized!' },
@@ -133,10 +171,11 @@ const HomePage = () => {
             </Grid>
           ))}
         </Grid>
+        
       </Container>
 
       {/* Contact Section */}
-      <Box sx={{ backgroundColor: '#F3E5AB', py: 6 }}>
+      <Box id="contact" sx={{ backgroundColor: '#F3E5AB', py: 6 }}>
         <Container>
           <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', color: '#4E342E' }}>Contact Us</Typography>
           <Grid container spacing={2}>
