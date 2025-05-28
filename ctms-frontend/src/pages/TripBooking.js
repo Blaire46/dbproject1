@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import {
-  Container,
   Typography,
   TextField,
   Button,
   Box,
-  Alert
+  Alert,
+  Paper
 } from '@mui/material';
 import { useParams } from 'react-router-dom';
 
@@ -29,38 +29,61 @@ const TripBooking = () => {
   };
 
   const handleSubmit = (e) => {
-  e.preventDefault();
-  setSubmitted(true);
+    e.preventDefault();
+    setSubmitted(true);
 
-  const newBooking = {
-    id: Date.now(),
-    tripId: id,
-    ...form,
-    status: 'Pending'
+    const newBooking = {
+      id: Date.now(),
+      tripId: id,
+      ...form,
+      status: 'Pending'
+    };
+
+    const existing = JSON.parse(localStorage.getItem('bookings')) || [];
+    localStorage.setItem('bookings', JSON.stringify([...existing, newBooking]));
+
+    setForm({
+      fullName: '',
+      email: '',
+      phone: '',
+      people: 1,
+      date: '',
+      message: ''
+    });
   };
 
-  // ⬇️ حفظ في localStorage
-  const existing = JSON.parse(localStorage.getItem('bookings')) || [];
-  localStorage.setItem('bookings', JSON.stringify([...existing, newBooking]));
-
-  console.log('📦 Booking saved:', newBooking);
-
-  // رسالة شكر
-  setForm({
-    fullName: '',
-    email: '',
-    phone: '',
-    people: 1,
-    date: '',
-    message: ''
-  });
-};
-
-
   return (
-    <Container maxWidth="sm">
-      <Box sx={{ mt: 5, p: 3, boxShadow: 3, borderRadius: 2 }}>
-        <Typography variant="h5" gutterBottom>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        backgroundImage: `url(/imgs/hero-beach.png)`, // Replace with your actual image path
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        p: 2
+      }}
+    >
+      <Paper
+        elevation={3}
+        sx={{
+          width: '100%',
+          maxWidth: 500,
+          p: 4,
+          bgcolor: 'rgba(0, 0, 0, 0.5)',
+          backdropFilter: 'blur(10px)',
+          borderRadius: 4,
+          color: '#fff'
+        }}
+      >
+        <Typography
+          variant="h5"
+          fontWeight="bold"
+          align="center"
+          gutterBottom
+          sx={{ color: '#ffb6c1' }}
+        >
           Book Trip #{id}
         </Typography>
 
@@ -79,6 +102,9 @@ const TripBooking = () => {
             required
             value={form.fullName}
             onChange={handleChange}
+            InputProps={{ style: { color: '#fff' } }}
+            InputLabelProps={{ style: { color: '#ccc' } }}
+            sx={{ input: { borderBottom: '1px solid white' } }}
           />
           <TextField
             label="Email"
@@ -89,6 +115,8 @@ const TripBooking = () => {
             required
             value={form.email}
             onChange={handleChange}
+            InputProps={{ style: { color: '#fff' } }}
+            InputLabelProps={{ style: { color: '#ccc' } }}
           />
           <TextField
             label="Phone Number"
@@ -98,6 +126,8 @@ const TripBooking = () => {
             required
             value={form.phone}
             onChange={handleChange}
+            InputProps={{ style: { color: '#fff' } }}
+            InputLabelProps={{ style: { color: '#ccc' } }}
           />
           <TextField
             label="Number of People"
@@ -109,6 +139,8 @@ const TripBooking = () => {
             value={form.people}
             onChange={handleChange}
             inputProps={{ min: 1 }}
+            InputProps={{ style: { color: '#fff' } }}
+            InputLabelProps={{ style: { color: '#ccc' } }}
           />
           <TextField
             label="Trip Date"
@@ -117,9 +149,10 @@ const TripBooking = () => {
             fullWidth
             margin="normal"
             required
-            InputLabelProps={{ shrink: true }}
+            InputLabelProps={{ shrink: true, style: { color: '#ccc' } }}
             value={form.date}
             onChange={handleChange}
+            InputProps={{ style: { color: '#fff' } }}
           />
           <TextField
             label="Additional Notes"
@@ -130,14 +163,30 @@ const TripBooking = () => {
             margin="normal"
             value={form.message}
             onChange={handleChange}
+            InputProps={{ style: { color: '#fff' } }}
+            InputLabelProps={{ style: { color: '#ccc' } }}
           />
 
-          <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
+          <Button
+            type="submit"
+            variant="outlined"
+            fullWidth
+            sx={{
+              mt: 3,
+              color: '#ffb6c1',
+              borderColor: '#ffb6c1',
+              fontWeight: 'bold',
+              '&:hover': {
+                backgroundColor: '#ffb6c1',
+                color: '#000'
+              }
+            }}
+          >
             Confirm Booking
           </Button>
         </form>
-      </Box>
-    </Container>
+      </Paper>
+    </Box>
   );
 };
 

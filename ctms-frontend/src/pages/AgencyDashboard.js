@@ -34,6 +34,12 @@ const getStoredBookings = () => {
   return JSON.parse(localStorage.getItem('bookings')) || [];
 };
 
+const getAgencyName = (agencyId) => {
+  const agencies = JSON.parse(localStorage.getItem('agencies')) || [];
+  const agency = agencies.find(a => a.id === Number(agencyId));
+  return agency ? agency.name : 'Unknown';
+};
+
 const AgencyDashboard = () => {
   const navigate = useNavigate();
   const { agencyId } = useParams();
@@ -66,11 +72,25 @@ const AgencyDashboard = () => {
     setNewTrip({ title: '', description: '', image: '' });
     setOpen(false);
   };
+  const handleEdit = (trip) => {
+  setNewTrip(trip);  // preload the form with existing trip data
+  setOpen(true);     // open the same dialog for editing
+};
+
+const handleDelete = (id) => {
+  const updated = trips.filter(t => t.id !== id);
+  setTrips(updated);
+  const allTrips = JSON.parse(localStorage.getItem('trips')) || [];
+  const updatedAll = allTrips.filter(t => t.id !== id);
+  localStorage.setItem('trips', JSON.stringify(updatedAll));
+};
+const [isEditing, setIsEditing] = useState(false);
+
 
   return (
     <Container sx={{ mt: 5 }}>
       <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', textAlign: 'center' }}>
-        🌍 Agency Dashboard
+         Agency Dashboard
       </Typography>
 
       {/* Navigation Tabs */}
@@ -88,31 +108,52 @@ const AgencyDashboard = () => {
               </Button>
             </Grid>
 
-            <Grid container spacing={4}>
+            <Grid container spacing={3}>
               {trips.map((trip) => (
-                <Grid item xs={12} sm={6} md={4} key={trip.id}>
-                  <Card sx={{ borderRadius: 3, boxShadow: 4 }}>
-                    <CardMedia
-                      component="img"
-                      height="200"
-                      image={trip.image}
-                      alt={trip.title}
-                    />
-                    <CardContent>
-                      <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
-                        {trip.title}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {trip.description}
-                      </Typography>
-                    </CardContent>
-                    <CardActions sx={{ justifyContent: 'space-between', px: 2, pb: 2 }}>
-                      <Button size="small" onClick={() => navigate(`/trips/${trip.id}`)}>Details</Button>
-                      <Button size="small" color="error">Delete</Button>
-                    </CardActions>
-                    <Button onClick={() => navigate(`/book/${trip.id}`)}>Book Now</Button>
-                  </Card>
-                </Grid>
+               <Grid item xs={12} sm={6} md={4} key={trip.id} sx={{ display: 'flex' }}>
+  <Card
+    sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      flexGrow: 1,
+      background: '#e5e5ff',
+      borderRadius: 3,
+      boxShadow: 4,
+    }}
+  >
+    <CardMedia
+      component="img"
+      height="200"
+      image={trip.image}
+      alt={trip.title}
+      sx={{ objectFit: 'cover' }}
+    />
+    <CardContent sx={{ flexGrow: 1 }}>
+      <Typography variant="h6">{trip.title}</Typography>
+      <Typography variant="body2" color="text.secondary">
+        {trip.description.length > 100 ? trip.description.slice(0, 100) + '...' : trip.description}
+      </Typography>
+      <Typography
+        variant="caption"
+        color="text.secondary"
+        display="block"
+        sx={{ mt: 1 }}
+      >
+        Organized by: <strong>{getAgencyName(trip.agencyId)}</strong>
+      </Typography>
+    </CardContent>
+    <CardActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
+  <Button size="small" color="primary" onClick={() => handleEdit(trip)}>
+    Edit
+  </Button>
+  <Button size="small" color="error" onClick={() => handleDelete(trip.id)}>
+    Delete
+  </Button>
+</CardActions>
+
+  </Card>
+</Grid>
+
               ))}
             </Grid>
 
@@ -185,4 +226,4 @@ const AgencyDashboard = () => {
   );
 };
 
-export default AgencyDashboard;
+export default AgencyDashboard;  

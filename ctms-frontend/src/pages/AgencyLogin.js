@@ -1,97 +1,98 @@
 import React, { useState } from 'react';
 import {
-Container,
-TextField,
-Button,
-Typography,
+Box,
 Paper,
-Alert,
-Box
+Typography,
+TextField,
+Button
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-const AgencyLogin = () => {
-const [credentials, setCredentials] = useState({ email: '', password: '' });
-const [error, setError] = useState('');
+const AgencyLoginPage = () => {
 const navigate = useNavigate();
+const [email, setEmail] = useState('');
+const [password, setPassword] = useState('');
 
-const handleChange = (e) => {
-setCredentials({ ...credentials, [e.target.name]: e.target.value });
-setError('');
-};
-
-const handleSubmit = (e) => {
-e.preventDefault();
-const agencies = JSON.parse(localStorage.getItem('agencies')) || [];
-
-const matchedAgency = agencies.find(
-  (a) => a.email === credentials.email && a.password === credentials.password
-);
-
-if (!matchedAgency) {
-  setError('❌ Invalid email or password');
-  return;
-}
-
-// Save session info
-localStorage.setItem('loggedAgencyId', matchedAgency.id);
-localStorage.setItem('userRole', 'agency');
-
-// Redirect to dashboard
-navigate(`/dashboard/${matchedAgency.id}`);
+const handleLogin = () => {
+// Handle agency login logic
+console.log('Agency Login:', { email, password });
 };
 
 return (
-<Container maxWidth="sm" sx={{ mt: 8 }}>
-<Paper elevation={3} sx={{ p: 4 }}>
-<Typography variant="h5" gutterBottom sx={{ textAlign: 'center', fontWeight: 'bold' }}>
+<Box
+sx={{
+height: '100vh',
+backgroundImage: 'url(/imgs/hero-beach.png)', // make sure this path is correct
+backgroundSize: 'cover',
+backgroundPosition: 'center',
+display: 'flex',
+alignItems: 'center',
+justifyContent: 'center',
+p: 2
+}}
+>
+<Paper elevation={10} sx={{
+padding: 4,
+maxWidth: 400,
+width: '100%',
+backgroundColor: 'rgba(0,0,0,0.6)', // dark semi-transparent background for contrast
+borderRadius: 4
+}}>
+<Typography variant="h4" sx={{ fontWeight: 'bold', color: '#f8bbd0', mb: 3 }}>
 Agency Login
 </Typography>
-
-
-    {error && (
-      <Alert severity="error" sx={{ mb: 2 }}>
-        {error}
-      </Alert>
-    )}
-
-    <Box component="form" onSubmit={handleSubmit}>
-      <TextField
-        label="Email"
-        name="email"
-        type="email"
-        fullWidth
-        required
-        margin="normal"
-        value={credentials.email}
-        onChange={handleChange}
-      />
-      <TextField
-        label="Password"
-        name="password"
-        type="password"
-        fullWidth
-        required
-        margin="normal"
-        value={credentials.password}
-        onChange={handleChange}
-      />
-      <Button type="submit" variant="contained" fullWidth sx={{ mt: 3 }}>
-        Login
-      </Button>
-      <Box textAlign="center" sx={{ mt: 2 }}>
-  <Typography variant="body2">
-    Don't have an account?{' '}
-    <Button variant="text" onClick={() => navigate('/register-agency')}>
-      Register your agency
-    </Button>
-  </Typography>
+<TextField
+fullWidth
+label="Email"
+type="email"
+variant="outlined"
+margin="normal"
+InputLabelProps={{ style: { color: '#fff' } }}
+InputProps={{ style: { color: '#fff' } }}
+value={email}
+onChange={(e) => setEmail(e.target.value)}
+/>
+<TextField
+fullWidth
+label="Password"
+type="password"
+variant="outlined"
+margin="normal"
+InputLabelProps={{ style: { color: '#fff' } }}
+InputProps={{ style: { color: '#fff' } }}
+value={password}
+onChange={(e) => setPassword(e.target.value)}
+/>
+<Button
+fullWidth
+variant="outlined"
+sx={{ mt: 3, color: '#fff', borderColor: '#fff' }}
+onClick={handleLogin}
+>
+Log In
+</Button>
+<Box textAlign="center" sx={{ mt: 2 }}>
+<Typography variant="body2" sx={{ color: '#fff' }}>
+Don't have an agency account?{' '}
+<Button
+variant="text"
+sx={{ color: '#f8bbd0', textTransform: 'none' }}
+onClick={() => navigate('/Register')}
+>
+Register Now
+</Button>
+</Typography>
 </Box>
-
-    </Box>
-  </Paper>
-</Container>
+<Button
+fullWidth
+sx={{ mt: 2, color: '#f8bbd0' }}
+onClick={() => navigate('/')}
+>
+Back to Home
+</Button>
+</Paper>
+</Box>
 );
 };
 
-export default AgencyLogin;
+export default AgencyLoginPage;
